@@ -17,6 +17,20 @@ export class Axial_Coordinate {
       this.r = r_grid + Math.round(r_delta + 0.5 * q_delta);
     }
   }
+
+  range(radius: number) {
+    let result = new Array<Axial_Coordinate>();
+    for (let q = -radius; q <= radius; q += 1) {
+      for (
+        let r = Math.max(-radius, -q - radius);
+        r <= Math.min(radius, -q + radius);
+        r += 1
+      ) {
+        result.push(new Axial_Coordinate(this.q + q, this.r + r))
+      }
+    }
+    return result;
+  }
 }
 
 export class Hex_Grid {
