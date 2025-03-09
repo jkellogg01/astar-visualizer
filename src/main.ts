@@ -47,7 +47,8 @@ function draw_frame() {
     return;
   }
 
-  ctx.clearRect(0, 0, innerWidth, innerHeight);
+  ctx.fillStyle = "white";
+  ctx.fillRect(0, 0, innerWidth, innerHeight);
 
   const grid_center = grid.pixel_to_axial(innerWidth / 2, innerHeight / 2);
   const grid_map = new Hex_Map(grid_center.range(3), new Array());
@@ -63,6 +64,6 @@ function draw_frame() {
     prev.addPath(grid.hex_path(curr.coord.q, curr.coord.r));
     return prev;
   }, new Path2D());
-  ctx.strokeStyle = "white";
+  ctx.strokeStyle = "black";
   ctx.stroke(grid_path);
 }
