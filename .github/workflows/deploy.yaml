@@ -1,0 +1,32 @@
+name: Deploy to Server
+on:
+  push:
+    branches:
+      - main
+permissions:
+  packages: write
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install
+      - run: bun run build
+      - name: Copy Static Files to VPS
+        env:
+          USER: josh
+          HOST: hexagons.jkellogg.dev
+          DIR: /var/www/hexagons.jkellogg.dev
+          DEPLOY_SSH_PRIVATE_KEY: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$DEPLOY_SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+          echo "Host *" > ~/.ssh/config
+          echo "  StrictHostKeyChecking no" >> ~/.ssh/config
+          echo "  UserKnownHostsFile /dev/null" >> ~/.ssh/config
+
+          ssh -i ~/.ssh/id_rsa $USER@$HOST rm -rf $DIR/*
+          scp -i ~/.ssh/id_rsa -r dist/* $USER@$HOST:$DIR
