@@ -1,4 +1,5 @@
 import { Hex_Grid } from "./hex_grid";
+import { Hex_Map } from "./hex_map";
 import "./reset.css";
 import "./style.css";
 
@@ -49,21 +50,17 @@ function draw_frame() {
   ctx.clearRect(0, 0, innerWidth, innerHeight);
 
   const grid_center = grid.pixel_to_axial(innerWidth / 2, innerHeight / 2);
-  const grid_coverage = grid_center.range(3);
+  const grid_map = new Hex_Map(grid_center.range(3), new Array());
 
   const cursor_grid_coord = grid.pixel_to_axial(cursor.x, cursor.y);
-  if (
-    grid_coverage.some((coord) => {
-      return coord.q === cursor_grid_coord.q && coord.r === cursor_grid_coord.r;
-    })
-  ) {
+  if (grid_map.has(cursor_grid_coord)) {
     ctx.fillStyle = "rgb(200 200 0 / 50%)";
     const hex = grid.hex_path(cursor_grid_coord.q, cursor_grid_coord.r);
     ctx.fill(hex);
   }
 
-  const grid_path = grid_coverage.reduce((prev, curr) => {
-    prev.addPath(grid.hex_path(curr.q, curr.r));
+  const grid_path = grid_map.all().reduce((prev, curr) => {
+    prev.addPath(grid.hex_path(curr.coord.q, curr.coord.r));
     return prev;
   }, new Path2D());
   ctx.strokeStyle = "white";
