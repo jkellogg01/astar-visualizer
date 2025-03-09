@@ -17,11 +17,9 @@ if (!app_root) {
 const canvas_el = document.createElement("canvas");
 canvas_el.width = 1280;
 canvas_el.height = 720;
-
-// TODO: could probably eventually dynamically write a description of the current state of the algorithm
-// for accessibility purposes
 canvas_el.textContent =
   "this demonstration works entirely in javascript using this canvas element; please enable javascript in order to view the demonstration.";
+canvas_el.role = "presentation";
 app_root.appendChild(canvas_el);
 
 const ctx = canvas_el.getContext("2d");
